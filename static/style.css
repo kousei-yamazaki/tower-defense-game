@@ -156,6 +156,32 @@ h1 {
   box-shadow: none;
 }
 
+.speed-btn {
+  background: #81C784;
+  color: #fff;
+  border: 2px solid #66BB6A;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.speed-btn:hover {
+  background: #66BB6A;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.speed-btn.selected {
+  background: #FFF176;
+  color: #333;
+  border-color: #F9A825;
+  box-shadow: 0 0 0 3px rgba(249, 168, 37, 0.4);
+  transform: translateY(-2px);
+}
+
 /* ===== メッセージエリア ===== */
 #message-area {
   min-height: 24px;

@@ -61,6 +61,7 @@ let gameLoopId = null;
 let spawnQueue = [];
 let spawnTimer = 0;
 const SPAWN_INTERVAL = 1200; // ms
+let gameSpeed = 1;
 
 // ---------- Canvas ----------
 const canvas = document.getElementById('gameCanvas');
@@ -90,6 +91,7 @@ function init() {
   gameoverModal.classList.add('hidden');
   rankingModal.classList.add('hidden');
   btnStartWave.disabled = false;
+  setSpeed(1);
   updateUI();
   if (gameLoopId) clearInterval(gameLoopId);
   gameLoopId = setInterval(gameLoop, 100);
@@ -209,13 +211,7 @@ function spawnEnemy(type) {
 // ---------- ゲームループ ----------
 let lastTime = Date.now();
 
-function gameLoop() {
-  if (!gameRunning) return;
-
-  const now = Date.now();
-  const dt = now - lastTime;
-  lastTime = now;
-
+function updateGame(dt) {
   // スポーン処理
   if (spawnQueue.length > 0) {
     spawnTimer += dt;
@@ -306,8 +302,28 @@ function gameLoop() {
       showMessage(`✅ ウェーブ ${wave - 1} クリア！次のウェーブを開始してください`, 3000);
     }
   }
+}
+
+function gameLoop() {
+  if (!gameRunning) return;
+
+  const now = Date.now();
+  const dt = now - lastTime;
+  lastTime = now;
+
+  for (let i = 0; i < gameSpeed; i++) {
+    updateGame(dt);
+  }
 
   render();
+}
+
+// ---------- 速度変更 ----------
+function setSpeed(speed) {
+  gameSpeed = speed;
+  document.querySelectorAll('.speed-btn').forEach(btn => {
+    btn.classList.toggle('selected', parseInt(btn.dataset.speed) === speed);
+  });
 }
 
 function killEnemy(enemy) {
