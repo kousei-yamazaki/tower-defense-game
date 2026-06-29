@@ -31,27 +31,64 @@ const TOWER_DEFS = {
   slow:   { name:'スロー', cost:25, color:'#00838F', range:1.5, damage:5,  rate:1500, aoe:false, slow:true  }
 };
 
-// 敵定義
+// 敵定義（ベースステータス）
 const ENEMY_DEFS = {
-  normal: { name:'通常敵', hp:60,  speed:1.2, reward:10, color:'#E53935', radius:10 },
-  fast:   { name:'高速敵', hp:30,  speed:2.5, reward:15, color:'#FB8C00', radius:8  },
-  tank:   { name:'タンク', hp:180, speed:0.6, reward:25, color:'#6D4C41', radius:14 }
+  normal: { name:'通常敵', baseHp:60,  baseSpeed:1.2, reward:10, color:'#E53935', radius:10, hpMult:1.0, speedMult:1.0 },
+  fast:   { name:'高速敵', baseHp:30,  baseSpeed:2.5, reward:15, color:'#FB8C00', radius:8,  hpMult:0.7, speedMult:1.5 },
+  tank:   { name:'タンク', baseHp:180, baseSpeed:0.6, reward:25, color:'#6D4C41', radius:14, hpMult:2.0, speedMult:0.5 }
 };
 
-// ウェーブ定義（各ウェーブで出現する敵の種類と数）
-const WAVE_DEFS = [
-  [{type:'normal', count:5}],
-  [{type:'normal', count:5}, {type:'fast', count:3}],
-  [{type:'normal', count:6}, {type:'fast', count:4}],
-  [{type:'normal', count:4}, {type:'fast', count:4}, {type:'tank', count:2}],
-  [{type:'normal', count:6}, {type:'fast', count:6}, {type:'tank', count:3}],
-];
+// 最大ウェーブ
+const MAX_WAVE = 99;
+
+// ウェーブごとの敵出現数を計算
+function getEnemyCountForWave(w) {
+  return 5 + w * 2;
+}
+
+// ウェーブごとの敵タイプ構成を動的生成
+function buildWaveDef(w) {
+  const total = getEnemyCountForWave(w);
+  if (w <= 2) {
+    return [{ type: 'normal', count: total }];
+  } else if (w <= 5) {
+    const fast = Math.floor(total * 0.3);
+    return [
+      { type: 'normal', count: total - fast },
+      { type: 'fast',   count: fast }
+    ];
+  } else if (w <= 10) {
+    const fast = Math.floor(total * 0.3);
+    const tank = Math.floor(total * 0.1);
+    return [
+      { type: 'normal', count: total - fast - tank },
+      { type: 'fast',   count: fast },
+      { type: 'tank',   count: tank }
+    ];
+  } else {
+    const fast = Math.floor(total * 0.35);
+    const tank = Math.floor(total * 0.15);
+    return [
+      { type: 'normal', count: total - fast - tank },
+      { type: 'fast',   count: fast },
+      { type: 'tank',   count: tank }
+    ];
+  }
+}
+
+// ウェーブ・敵タイプに応じたステータスを計算
+function calcEnemyStats(type, w) {
+  const def = ENEMY_DEFS[type];
+  const hp    = Math.floor((def.baseHp    + w * 10) * def.hpMult);
+  const speed = (def.baseSpeed + w * 0.02) * def.speedMult;
+  return { hp, speed };
+}
 
 // ---------- ゲーム状態 ----------
 let gold = 100;
 let hp = 10;
 let wave = 1;
-let score = 0;
+let score = 0; // 到達ウェーブ数をスコアとして使用
 let selectedTower = 'normal';
 let towers = [];
 let enemies = [];
@@ -102,7 +139,7 @@ function init() {
 function updateUI() {
   goldDisplay.textContent  = gold;
   hpDisplay.textContent    = hp;
-  waveDisplay.textContent  = wave;
+  waveDisplay.textContent  = `${wave} / ${MAX_WAVE}`;
   scoreDisplay.textContent = score;
 }
 
@@ -169,10 +206,9 @@ btnStartWave.addEventListener('click', () => {
 function startWave() {
   waveInProgress = true;
   btnStartWave.disabled = true;
-  const waveIdx = Math.min(wave - 1, WAVE_DEFS.length - 1);
-  const waveDef = WAVE_DEFS[waveIdx];
+  const waveDef = buildWaveDef(wave);
 
-  // スポーンキューを構築
+  // スポーンキューを構築（ウェーブ強化済みステータスを付与）
   spawnQueue = [];
   waveDef.forEach(group => {
     for (let i = 0; i < group.count; i++) {
@@ -190,11 +226,12 @@ function startWave() {
 // ---------- 敵スポーン ----------
 function spawnEnemy(type) {
   const def = ENEMY_DEFS[type];
+  const stats = calcEnemyStats(type, wave);
   enemies.push({
     type,
-    hp: def.hp,
-    maxHp: def.hp,
-    speed: def.speed,
+    hp: stats.hp,
+    maxHp: stats.hp,
+    speed: stats.speed,
     reward: def.reward,
     color: def.color,
     radius: def.radius,
@@ -292,12 +329,13 @@ function updateGame(dt) {
   // ウェーブ終了チェック
   if (waveInProgress && spawnQueue.length === 0 && enemies.length === 0) {
     waveInProgress = false;
-    wave++;
-    score += wave * 50;
+    score = wave; // スコア = 到達ウェーブ数
     updateUI();
-    if (wave > WAVE_DEFS.length + 1) {
+    if (wave >= MAX_WAVE) {
       triggerGameClear();
     } else {
+      wave++;
+      updateUI();
       btnStartWave.disabled = false;
       showMessage(`✅ ウェーブ ${wave - 1} クリア！次のウェーブを開始してください`, 3000);
     }
@@ -329,7 +367,7 @@ function setSpeed(speed) {
 function killEnemy(enemy) {
   enemy.alive = false;
   gold += enemy.reward;
-  score += enemy.reward * 2;
+  // スコアは到達ウェーブ数で管理するため、ここでは加算しない
   updateUI();
 }
 
@@ -480,20 +518,22 @@ function drawLabel(col, row, text, color) {
 
 // ---------- ゲームオーバー / クリア ----------
 function triggerGameOver() {
+  score = wave; // ゲームオーバー時も到達ウェーブをスコアに
+  updateUI();
   endGame('💀 ゲームオーバー');
 }
 
 function triggerGameClear() {
-  score += 500; // クリアボーナス
+  score = MAX_WAVE; // Wave99クリア
   updateUI();
-  endGame('🎉 ゲームクリア！');
+  endGame('🎉 CLEAR！Wave 99 到達！');
 }
 
 function endGame(title) {
   gameRunning = false;
   clearInterval(gameLoopId);
   modalTitle.textContent = title;
-  modalScore.textContent = `スコア: ${score}`;
+  modalScore.textContent = `到達ウェーブ: ${score} / ${MAX_WAVE}`;
   gameoverModal.classList.remove('hidden');
 }
 
@@ -504,7 +544,7 @@ document.getElementById('btn-save-score').addEventListener('click', async () => 
     const res = await fetch('/score', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ player_name: name, score })
+      body: JSON.stringify({ player_name: name, score, wave })
     });
     if (res.ok) {
       showMessage('✅ スコアを保存しました！', 3000);

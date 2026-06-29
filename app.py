@@ -38,6 +38,7 @@ def index():
 def save_score():
     data = request.get_json()
     player_name = data.get('player_name', 'Anonymous')
+    # score = 到達ウェーブ数
     score = data.get('score', 0)
 
     conn = get_db()
@@ -54,6 +55,7 @@ def save_score():
 @app.route('/scores', methods=['GET'])
 def get_scores():
     conn = get_db()
+    # 到達ウェーブ数（score）の降順でランキング表示
     rows = conn.execute(
         'SELECT player_name, score, created_at FROM scores ORDER BY score DESC LIMIT 10'
     ).fetchall()
