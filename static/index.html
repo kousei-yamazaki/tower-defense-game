@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>タワーディフェンスゲーム</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>🏰 タワーディフェンス</h1>
+
+  <div id="main-container">
+    <!-- ゲームエリア -->
+    <div id="game-area">
+      <canvas id="gameCanvas" width="600" height="360"></canvas>
+    </div>
+
+    <!-- ステータスバー -->
+    <div id="status-bar">
+      <div class="status-item">
+        <span class="status-label">💰 Gold</span>
+        <span id="gold-display" class="status-value">100</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">❤️ HP</span>
+        <span id="hp-display" class="status-value">10</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">🌊 Wave</span>
+        <span id="wave-display" class="status-value">1</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">⭐ Score</span>
+        <span id="score-display" class="status-value">0</span>
+      </div>
+    </div>
+
+    <!-- タワー選択エリア -->
+    <div id="tower-select-area">
+      <span class="select-label">タワー選択：</span>
+      <button class="tower-btn selected" id="btn-normal" data-type="normal">
+        🗼 通常 (20G)
+      </button>
+      <button class="tower-btn" id="btn-area" data-type="area">
+        💥 範囲 (30G)
+      </button>
+      <button class="tower-btn" id="btn-slow" data-type="slow">
+        ❄️ スロー (25G)
+      </button>
+      <button id="btn-start-wave" class="wave-btn">▶ 次のウェーブ開始</button>
+    </div>
+
+    <!-- メッセージ -->
+    <div id="message-area"></div>
+  </div>
+
+  <!-- ゲームオーバーモーダル -->
+  <div id="gameover-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="modal-title">ゲームオーバー</h2>
+      <p id="modal-score"></p>
+      <div class="modal-input">
+        <label for="player-name">プレイヤー名：</label>
+        <input type="text" id="player-name" maxlength="20" placeholder="名前を入力" />
+      </div>
+      <button id="btn-save-score">スコアを保存</button>
+      <button id="btn-show-ranking">ランキングを見る</button>
+      <button id="btn-restart">もう一度プレイ</button>
+    </div>
+  </div>
+
+  <!-- ランキングモーダル -->
+  <div id="ranking-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>🏆 ランキング</h2>
+      <table id="ranking-table">
+        <thead>
+          <tr><th>順位</th><th>名前</th><th>スコア</th><th>日時</th></tr>
+        </thead>
+        <tbody id="ranking-body"></tbody>
+      </table>
+      <button id="btn-close-ranking">閉じる</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
