@@ -82,8 +82,87 @@ h1 {
   text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
-/* ===== タワー選択エリア ===== */
-#tower-select-area {
+/* ===== 手札エリア ===== */
+#hand-section {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 2px solid #4FC3F7;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+#hand-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0277BD;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#hand-area {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ===== 手札カード ===== */
+.hand-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  min-height: 100px;
+  background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+  border: 2px solid #90CAF9;
+  border-radius: 10px;
+  padding: 8px 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  user-select: none;
+}
+
+.hand-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  border-color: #42A5F5;
+}
+
+.hand-card.selected {
+  background: linear-gradient(135deg, #FFF9C4, #FFF176);
+  border-color: #F9A825;
+  box-shadow: 0 0 0 3px rgba(249, 168, 37, 0.5), 0 4px 12px rgba(0,0,0,0.2);
+  transform: translateY(-6px);
+}
+
+.card-icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.card-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1565C0;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.card-cost {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #E65100;
+  background: #FFF3E0;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+/* ===== コントロールエリア ===== */
+#control-area {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -103,32 +182,6 @@ h1 {
   font-size: 0.9rem;
 }
 
-.tower-btn {
-  background: #81C784;
-  color: #fff;
-  border: 2px solid #66BB6A;
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.tower-btn:hover {
-  background: #66BB6A;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
-
-.tower-btn.selected {
-  background: #FFF176;
-  color: #333;
-  border-color: #F9A825;
-  box-shadow: 0 0 0 3px rgba(249, 168, 37, 0.4);
-  transform: translateY(-2px);
-}
-
 .wave-btn {
   background: #4FC3F7;
   color: #fff;
@@ -139,7 +192,6 @@ h1 {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  margin-left: 8px;
 }
 
 .wave-btn:hover {
@@ -180,6 +232,64 @@ h1 {
   border-color: #F9A825;
   box-shadow: 0 0 0 3px rgba(249, 168, 37, 0.4);
   transform: translateY(-2px);
+}
+
+/* ===== 売却ボタン ===== */
+.sell-btn {
+  background: #EF9A9A;
+  color: #B71C1C;
+  border: 2px solid #E57373;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sell-btn:hover {
+  background: #E57373;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.sell-btn.sell-mode-active {
+  background: #B71C1C;
+  color: #fff;
+  border-color: #7F0000;
+  box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.4), 0 3px 8px rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+}
+
+/* ===== タワー凡例 ===== */
+#tower-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  background: #F9FBE7;
+  border-radius: 8px;
+  padding: 8px 12px;
+  width: 100%;
+  border: 1px solid #DCE775;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555;
+  background: #fff;
+  border-radius: 4px;
+  padding: 3px 8px;
+  border: 1px solid #E0E0E0;
+}
+
+.legend-icon {
+  font-size: 1rem;
 }
 
 /* ===== メッセージエリア ===== */
