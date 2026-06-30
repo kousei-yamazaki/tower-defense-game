@@ -10,15 +10,15 @@ const CELL = 60; // px
 // 経路定義（列インデックスの配列、行は上から下へ蛇行）
 // (col, row) の順で経路を定義
 const PATH = [
-  {c:0,r:0},{c:1,r:0},{c:2,r:0},{c:3,r:0},
-  {c:3,r:1},{c:3,r:2},
-  {c:2,r:2},{c:1,r:2},{c:0,r:2},
-  {c:0,r:3},{c:0,r:4},
-  {c:1,r:4},{c:2,r:4},{c:3,r:4},{c:4,r:4},{c:5,r:4},
-  {c:5,r:3},{c:5,r:2},{c:5,r:1},{c:5,r:0},
-  {c:6,r:0},{c:7,r:0},
-  {c:7,r:1},{c:7,r:2},{c:7,r:3},{c:7,r:4},{c:7,r:5},
-  {c:8,r:5},{c:9,r:5}
+  { c: 0, r: 0 }, { c: 1, r: 0 }, { c: 2, r: 0 }, { c: 3, r: 0 },
+  { c: 3, r: 1 }, { c: 3, r: 2 },
+  { c: 2, r: 2 }, { c: 1, r: 2 }, { c: 0, r: 2 },
+  { c: 0, r: 3 }, { c: 0, r: 4 },
+  { c: 1, r: 4 }, { c: 2, r: 4 }, { c: 3, r: 4 }, { c: 4, r: 4 }, { c: 5, r: 4 },
+  { c: 5, r: 3 }, { c: 5, r: 2 }, { c: 5, r: 1 }, { c: 5, r: 0 },
+  { c: 6, r: 0 }, { c: 7, r: 0 },
+  { c: 7, r: 1 }, { c: 7, r: 2 }, { c: 7, r: 3 }, { c: 7, r: 4 }, { c: 7, r: 5 },
+  { c: 8, r: 5 }, { c: 9, r: 5 }
 ];
 
 // 経路セルのセット（高速検索用）
@@ -37,14 +37,14 @@ const PATH_SET = new Set(PATH.map(p => `${p.c},${p.r}`));
 // gold:      0 / -    =  0 DPS  コスト50 (資源生成)
 // wall:      0 / -    =  0 DPS  コスト15 (敵の足止め・スタン)
 const TOWER_DEFS = {
-  normal:  { name:'通常',     cost:20, color:'#1565C0', range:1.5, damage:20, rate:1000, aoe:false, slow:false, special:null,      icon:'🗼' },
-  area:    { name:'範囲',     cost:30, color:'#6A1B9A', range:2.0, damage:12, rate:1200, aoe:true,  slow:false, special:null,      icon:'💥' },
-  slow:    { name:'スロー',   cost:25, color:'#00838F', range:1.5, damage:5,  rate:1500, aoe:false, slow:true,  special:null,      icon:'❄️' },
-  sniper:  { name:'スナイパー', cost:40, color:'#B71C1C', range:3.5, damage:60, rate:3000, aoe:false, slow:false, special:null,    icon:'🎯' },
-  rapid:   { name:'連射',     cost:35, color:'#E65100', range:1.2, damage:8,  rate:400,  aoe:false, slow:false, special:null,      icon:'⚡' },
-  support: { name:'サポート', cost:30, color:'#558B2F', range:2.0, damage:0,  rate:5000, aoe:false, slow:false, special:'support', icon:'🔰' },
-  gold:    { name:'ゴールド', cost:50, color:'#F9A825', range:0,   damage:0,  rate:8000, aoe:false, slow:false, special:'gold',    icon:'💰' },
-  wall:    { name:'壁',       cost:15, color:'#5D4037', range:1.0, damage:0,  rate:2000, aoe:false, slow:false, special:'wall',    icon:'🧱' }
+  normal: { name: '通常', cost: 20, color: '#1565C0', range: 1.5, damage: 20, rate: 1000, aoe: false, slow: false, special: null, icon: '🗼' },
+  area: { name: '範囲', cost: 30, color: '#6A1B9A', range: 2.0, damage: 12, rate: 1200, aoe: true, slow: false, special: null, icon: '💥' },
+  slow: { name: 'スロー', cost: 25, color: '#00838F', range: 1.5, damage: 5, rate: 1500, aoe: false, slow: true, special: null, icon: '❄️' },
+  sniper: { name: 'スナイパー', cost: 40, color: '#B71C1C', range: 3.5, damage: 60, rate: 3000, aoe: false, slow: false, special: null, icon: '🎯' },
+  rapid: { name: '連射', cost: 35, color: '#E65100', range: 1.2, damage: 8, rate: 400, aoe: false, slow: false, special: null, icon: '⚡' },
+  support: { name: 'サポート', cost: 30, color: '#558B2F', range: 2.0, damage: 0, rate: 5000, aoe: false, slow: false, special: 'support', icon: '🔰' },
+  gold: { name: 'ゴールド', cost: 50, color: '#F9A825', range: 0, damage: 0, rate: 8000, aoe: false, slow: false, special: 'gold', icon: '💰' },
+  wall: { name: '壁', cost: 15, color: '#5D4037', range: 1.0, damage: 0, rate: 2000, aoe: false, slow: false, special: 'wall', icon: '🧱' }
 };
 
 // スロータワー調整定数
@@ -58,7 +58,7 @@ const WALL_STUN_COOLDOWN = 4000;  // 壁タワーのクールダウン (ms)
 // ===================================================
 //  デッキ定義（全8種）
 // ===================================================
-const DECK_TYPES = ['normal','area','slow','sniper','rapid','support','gold','wall'];
+const DECK_TYPES = ['normal', 'area', 'slow', 'sniper', 'rapid', 'support', 'gold', 'wall'];
 const HAND_SIZE = 3;
 
 // 手札・デッキ状態
@@ -71,9 +71,9 @@ let sellMode = false;
 
 // ---------- 敵定義（ベースステータス）----------
 const ENEMY_DEFS = {
-  normal: { name:'通常敵', baseHp:60,  baseSpeed:1.2, reward:10, color:'#E53935', radius:10, hpMult:1.0, speedMult:1.0 },
-  fast:   { name:'高速敵', baseHp:30,  baseSpeed:2.5, reward:15, color:'#FB8C00', radius:8,  hpMult:0.7, speedMult:1.5 },
-  tank:   { name:'タンク', baseHp:180, baseSpeed:0.6, reward:25, color:'#6D4C41', radius:14, hpMult:2.0, speedMult:0.5 }
+  normal: { name: '通常敵', baseHp: 60, baseSpeed: 1.2, reward: 10, color: '#E53935', radius: 10, hpMult: 1.0, speedMult: 1.0 },
+  fast: { name: '高速敵', baseHp: 30, baseSpeed: 2.5, reward: 15, color: '#FB8C00', radius: 8, hpMult: 0.7, speedMult: 1.5 },
+  tank: { name: 'タンク', baseHp: 180, baseSpeed: 0.6, reward: 25, color: '#6D4C41', radius: 14, hpMult: 2.0, speedMult: 0.5 }
 };
 
 // 最大ウェーブ
@@ -93,23 +93,23 @@ function buildWaveDef(w) {
     const fast = Math.floor(total * 0.3);
     return [
       { type: 'normal', count: total - fast },
-      { type: 'fast',   count: fast }
+      { type: 'fast', count: fast }
     ];
   } else if (w <= 10) {
     const fast = Math.floor(total * 0.3);
     const tank = Math.floor(total * 0.1);
     return [
       { type: 'normal', count: total - fast - tank },
-      { type: 'fast',   count: fast },
-      { type: 'tank',   count: tank }
+      { type: 'fast', count: fast },
+      { type: 'tank', count: tank }
     ];
   } else {
     const fast = Math.floor(total * 0.35);
     const tank = Math.floor(total * 0.15);
     return [
       { type: 'normal', count: total - fast - tank },
-      { type: 'fast',   count: fast },
-      { type: 'tank',   count: tank }
+      { type: 'fast', count: fast },
+      { type: 'tank', count: tank }
     ];
   }
 }
@@ -117,7 +117,7 @@ function buildWaveDef(w) {
 // ウェーブ・敵タイプに応じたステータスを計算
 function calcEnemyStats(type, w) {
   const def = ENEMY_DEFS[type];
-  const hp    = Math.floor((def.baseHp    + w * 10) * def.hpMult);
+  const hp = Math.floor((def.baseHp + w * 10) * def.hpMult);
   const speed = (def.baseSpeed + w * 0.02) * def.speedMult;
   return { hp, speed };
 }
@@ -146,20 +146,20 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // ---------- UI要素 ----------
-const goldDisplay  = document.getElementById('gold-display');
-const hpDisplay    = document.getElementById('hp-display');
-const waveDisplay  = document.getElementById('wave-display');
+const goldDisplay = document.getElementById('gold-display');
+const hpDisplay = document.getElementById('hp-display');
+const waveDisplay = document.getElementById('wave-display');
 const scoreDisplay = document.getElementById('score-display');
-const messageArea  = document.getElementById('message-area');
+const messageArea = document.getElementById('message-area');
 const btnStartWave = document.getElementById('btn-start-wave');
-const btnSellMode  = document.getElementById('btn-sell-mode');
-const gameoverModal  = document.getElementById('gameover-modal');
-const rankingModal   = document.getElementById('ranking-modal');
-const modalTitle     = document.getElementById('modal-title');
-const modalScore     = document.getElementById('modal-score');
+const btnSellMode = document.getElementById('btn-sell-mode');
+const gameoverModal = document.getElementById('gameover-modal');
+const rankingModal = document.getElementById('ranking-modal');
+const modalTitle = document.getElementById('modal-title');
+const modalScore = document.getElementById('modal-score');
 const playerNameInput = document.getElementById('player-name');
-const rankingBody    = document.getElementById('ranking-body');
-const handArea       = document.getElementById('hand-area');
+const rankingBody = document.getElementById('ranking-body');
+const handArea = document.getElementById('hand-area');
 
 // ===================================================
 //  デッキ・手札システム
@@ -280,9 +280,9 @@ function init() {
 
 // ---------- UI更新 ----------
 function updateUI() {
-  goldDisplay.textContent  = gold;
-  hpDisplay.textContent    = hp;
-  waveDisplay.textContent  = `${wave} / ${MAX_WAVE}`;
+  goldDisplay.textContent = gold;
+  hpDisplay.textContent = hp;
+  waveDisplay.textContent = `${wave} / ${MAX_WAVE}`;
   scoreDisplay.textContent = score;
 }
 
@@ -295,10 +295,10 @@ function showMessage(msg, duration = 2000) {
 canvas.addEventListener('click', e => {
   if (!gameRunning) return;
   const rect = canvas.getBoundingClientRect();
-  const scaleX = canvas.width  / rect.width;
+  const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
   const mx = (e.clientX - rect.left) * scaleX;
-  const my = (e.clientY - rect.top)  * scaleY;
+  const my = (e.clientY - rect.top) * scaleY;
   const col = Math.floor(mx / CELL);
   const row = Math.floor(my / CELL);
 
@@ -600,23 +600,38 @@ function updateGame(dt) {
   bullets = bullets.filter(b => b.life > 0);
 
   // ウェーブ終了チェック
+  // ウェーブ終了チェック
   if (waveInProgress && spawnQueue.length === 0 && enemies.length === 0) {
     waveInProgress = false;
     score = wave;
     updateUI();
+
     if (wave >= MAX_WAVE) {
       triggerGameClear();
     } else {
       wave++;
+
       updateUI();
-      btnStartWave.disabled = false;
-      showMessage(`✅ ウェーブ ${wave - 1} クリア！次のウェーブを開始してください`, 3000);
+
+      // ✅ AUTOモード判定
+      if (autoMode) {
+        startWave(); // 次ウェーブを自動開始
+      } else {
+        btnStartWave.disabled = false;
+        showMessage(`✅ ウェーブ ${wave - 1} クリア！次のウェーブを開始してください`, 3000);
+      }
     }
   }
 }
 
 function gameLoop() {
   if (!gameRunning) return;
+
+  // ✅ 一時停止中
+  if (isPaused) {
+    lastTime = Date.now(); // ←時間リセット（超重要）
+    return;
+  }
 
   const now = Date.now();
   const dt = now - lastTime;
@@ -628,6 +643,7 @@ function gameLoop() {
 
   render();
 }
+
 
 // ---------- 速度変更 ----------
 function setSpeed(speed) {
@@ -693,17 +709,17 @@ function render() {
   ctx.lineWidth = 2;
   for (let i = 0; i < PATH.length - 1; i++) {
     const from = PATH[i];
-    const to   = PATH[i + 1];
+    const to = PATH[i + 1];
     const fx = from.c * CELL + CELL / 2;
     const fy = from.r * CELL + CELL / 2;
-    const tx = to.c   * CELL + CELL / 2;
-    const ty = to.r   * CELL + CELL / 2;
+    const tx = to.c * CELL + CELL / 2;
+    const ty = to.r * CELL + CELL / 2;
     drawArrow(ctx, fx, fy, tx, ty);
   }
 
   // スタート・ゴールマーク
   drawLabel(PATH[0].c, PATH[0].r, 'START', '#43A047');
-  drawLabel(PATH[PATH.length-1].c, PATH[PATH.length-1].r, 'GOAL', '#E53935');
+  drawLabel(PATH[PATH.length - 1].c, PATH[PATH.length - 1].r, 'GOAL', '#E53935');
 
   // タワー描画
   towers.forEach(tower => {
@@ -953,14 +969,46 @@ document.getElementById('btn-restart').addEventListener('click', () => {
 // ---------- 起動 ----------
 // init();
 
+let autoMode = false;
+let isPaused = false;
+
 
 window.addEventListener("DOMContentLoaded", () => {
+  const btnAuto = document.getElementById("btn-auto");
   const title = document.getElementById("title-screen");
   const game = document.getElementById("main-container");
+  const btnPause = document.getElementById("btn-pause");
+
+  btnAuto.addEventListener("click", () => {
+    autoMode = !autoMode;
+
+    if (autoMode) {
+      btnAuto.textContent = "🔁 AUTO ON";
+      btnAuto.classList.add("active");
+    } else {
+      btnAuto.textContent = "🔁 AUTO OFF";
+      btnAuto.classList.remove("active");
+    }
+  });
 
   document.getElementById("start-btn").addEventListener("click", () => {
     title.style.display = "none";
     game.style.display = "block";
     init();
   });
+
+  btnPause.addEventListener("click", () => {
+    isPaused = !isPaused;
+
+    if (isPaused) {
+      btnPause.textContent = "▶ 再開";
+      btnPause.classList.add("paused");
+      showMessage("⏸ 一時停止中", 0);
+    } else {
+      btnPause.textContent = "⏸ 一時停止";
+      btnPause.classList.remove("paused");
+      showMessage("▶ 再開しました", 1000);
+    }
+  });
+
 });

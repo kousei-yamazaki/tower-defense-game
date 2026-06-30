@@ -22,6 +22,35 @@
   z-index: 9999;
 }
 
+.auto-btn {
+  background: #90A4AE;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.auto-btn.active {
+  background: #66BB6A; /* ON時は緑 */
+}
+
+.pause-btn {
+  background: #FFB74D;
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.pause-btn.paused {
+  background: #EF5350; /* 停止中は赤 */
+  color: white;
+}
+
 .title{
   font-size: 60px;
   font-weight: bold;
@@ -228,6 +257,48 @@ h1 {
   border: 2px solid #4FC3F7;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
+
+#control-area button {
+  height: 40px;       /* ✅ 全部同じ高さ */
+  padding: 0 14px;    /* 横だけ余白 */
+  display: flex;
+  align-items: center; /* 中央揃え */
+  justify-content: center;
+}
+
+/* 行を作る */
+.control-row {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 上段と下段の間に余白 */
+.top-row {
+  margin-bottom: 6px;
+}
+
+/* ボタンのサイズを少し揃える */
+.top-row button {
+  min-width: 120px;
+}
+
+/* 速度行 */
+.bottom-row {
+  justify-content: center;
+}
+
+/* 表示ラベル */
+.select-label {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+
+
 
 .select-label {
   font-weight: 600;
