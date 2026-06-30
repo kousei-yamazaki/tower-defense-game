@@ -3,13 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>タワーディフェンスゲーム</title>
+  <title>Tower Defense Game</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-  <h1>🏰 タワーディフェンス</h1>
+  
+<!-- タイトル -->
+  <div id="title-screen">
+    <a class="title">Tower Defense Game</a>
+    <button id="start-btn">▶ ゲーム開始</button>
+  </div>
 
-  <div id="main-container">
+  <h1>Tower Defense Game</h1>
+
+  <div id="main-container" style="display: none;">
     <!-- ゲームエリア -->
     <div id="game-area">
       <canvas id="gameCanvas" width="600" height="360"></canvas>

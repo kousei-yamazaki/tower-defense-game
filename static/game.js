@@ -951,4 +951,16 @@ document.getElementById('btn-restart').addEventListener('click', () => {
 });
 
 // ---------- 起動 ----------
-init();
+// init();
+
+
+window.addEventListener("DOMContentLoaded", () => {
+  const title = document.getElementById("title-screen");
+  const game = document.getElementById("main-container");
+
+  document.getElementById("start-btn").addEventListener("click", () => {
+    title.style.display = "none";
+    game.style.display = "block";
+    init();
+  });
+});
