@@ -76,6 +76,9 @@ function getStars(value, max) {
   return '<span style="color:#FFD700;">★★★</span>'; // 強い（金）
 }
 
+// 説明文をクリックしたら、非表示
+const guide = document.getElementById("legend-guide");
+
 
 // スロータワー調整定数
 const SLOW_DURATION = 3000;       // スロー効果時間 (ms) ← 延長（旧2000）
@@ -1053,9 +1056,115 @@ document.getElementById('btn-restart').addEventListener('click', () => {
 // ---------- 起動 ----------
 // init();
 
+const legendList = document.getElementById("legend-list");
+const legendDetail = document.getElementById("legend-detail");
+const legendContent = document.getElementById("legend-content");
+
+// ✅ 詳細内容
+function getLegendDetail(type) {
+
+  if (type === "normal") return `
+    <b>🗼 通常タワー</b><br>
+    バランス型の基本タワー<br><br>
+
+    攻撃力：20 / 射程：1.5 / 速度：1.0秒<br><br>
+
+    <i>初心者におすすめ</i>
+  `;
+
+  if (type === "aoe") return `
+    <b>💥 範囲タワー</b><br>
+    複数の敵に同時ダメージ<br><br>
+
+    攻撃力：30（範囲）/ 射程：1.4 / 攻撃速度：1.2秒<br><br>
+
+    <i>敵の集団に強い</i>
+  `;
+
+  if (type === "slow") return `
+    <b>❄️ スロータワー</b><br>
+    敵の移動速度を低下<br><br>
+
+    減速率：50% / 持続時間：2秒 / 射程：1.6<br><br>
+
+    <i>ボスや速い敵に有効</i>
+  `;
+
+  if (type === "sniper") return `
+    <b>🎯 スナイパー</b><br>
+    高威力・長距離攻撃<br><br>
+
+    攻撃力：60 / 射程：3.0 / 攻撃速度：2.0秒<br><br>
+
+    <i>単体の強敵対策</i>
+  `;
+
+  if (type === "rapid") return `
+    <b>⚡ 連射タワー</b><br>
+    高速で攻撃する<br><br>
+
+    攻撃力：8 / 射程：1.2 / 攻撃速度：0.2秒<br><br>
+
+    <i>雑魚処理に最適</i>
+  `;
+
+  
+  if (type === "support") return `
+  <b>🔰 サポート</b><br>
+  周囲タワーを強化<br><br>
+
+  攻撃力+30% / 範囲：2マス / 重複：2回<br><br>
+
+  <i>複数配置で強力</i>
+`;
+
+
+  if (type === "gold") return `
+    <b>💰 ゴールドタワー</b><br>
+    時間経過で資金生成<br><br>
+
+    生成量：10G / 5秒<br><br>
+
+    攻撃：なし<br><br>
+
+    <i>序盤〜中盤で重要</i>
+  `;
+
+  if (type === "wall") return `
+    <b>🧱 壁</b><br>
+    敵を足止めする<br><br>
+
+    足止め時間：2秒<br>
+    再発動：5秒後<br><br>
+
+    ダメージ：なし<br><br>
+
+    <i>通路制御ができる</i>
+  `;
+}
+
+// ✅ クリック
+document.querySelectorAll(".legend-item").forEach(el => {
+  el.addEventListener("click", () => {
+    const type = el.dataset.type;
+
+    legendContent.innerHTML = getLegendDetail(type);
+
+    legendList.classList.add("hidden");
+    legendDetail.classList.remove("hidden");
+    guide.classList.add("hidden");
+  });
+});
+
+// ✅ 戻る
+document.getElementById("legend-back").addEventListener("click", () => {
+  legendDetail.classList.add("hidden");
+  legendList.classList.remove("hidden");
+  guide.classList.remove("hidden"); 
+});
+
 let autoMode = false;
 let isPaused = false;
-
 
 window.addEventListener("DOMContentLoaded", () => {
   const btnAuto = document.getElementById("btn-auto");
