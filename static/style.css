@@ -66,7 +66,20 @@
   to { text-shadow: 0 0 30px #81D4FA; }
 }
 
-
+/* カード詳細 */
+.tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  display: none;
+  z-index: 9999;
+  white-space: nowrap;
+  line-height: 1.4;
+}
 
 #start-btn {
   font-size: 24px;

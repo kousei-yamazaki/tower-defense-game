@@ -46,6 +46,36 @@ const TOWER_DEFS = {
   gold: { name: 'ゴールド', cost: 50, color: '#F9A825', range: 0, damage: 0, rate: 8000, aoe: false, slow: false, special: 'gold', icon: '💰' },
   wall: { name: '壁', cost: 15, color: '#5D4037', range: 1.0, damage: 0, rate: 2000, aoe: false, slow: false, special: 'wall', icon: '🧱' }
 };
+// カードの詳細
+const tooltip = document.getElementById("tooltip");
+// 表示
+function showTooltip(e, text) {
+  tooltip.style.display = "block";
+  tooltip.innerHTML = text;
+
+  tooltip.style.left = (e.pageX + 12) + "px";
+  tooltip.style.top = (e.pageY + 12) + "px";
+}
+
+// 非表示
+function hideTooltip() {
+  tooltip.style.display = "none";
+}
+
+
+// ★評価（色付き）
+function getStars(value, max) {
+  const rate = value / max;
+
+  if (rate < 0.33) {
+    return '<span style="color:#888;">★☆☆</span>'; // 弱い（灰色）
+  }
+  if (rate < 0.66) {
+    return '<span style="color:#FFD700;">★★☆</span>'; // 中（黄色）
+  }
+  return '<span style="color:#FFD700;">★★★</span>'; // 強い（金）
+}
+
 
 // スロータワー調整定数
 const SLOW_DURATION = 3000;       // スロー効果時間 (ms) ← 延長（旧2000）
@@ -214,20 +244,64 @@ function refreshHand() {
 // 手札UIを描画
 function renderHand() {
   if (!handArea) return;
+
   handArea.innerHTML = '';
+
   hand.forEach((type, i) => {
     const def = TOWER_DEFS[type];
+
     const card = document.createElement('div');
     card.className = 'hand-card' + (i === selectedHandIndex ? ' selected' : '');
+
     card.innerHTML = `
       <div class="card-icon">${def.icon}</div>
       <div class="card-name">${def.name}</div>
       <div class="card-cost">${def.cost}G</div>
     `;
+
+    // ✅ クリック（配置選択）
     card.addEventListener('click', () => {
       selectedHandIndex = i;
       renderHand();
     });
+
+    
+// ✅ ホバー時（説明表示）
+card.addEventListener("mouseover", (e) => {
+  const def = TOWER_DEFS[type];
+
+  // ★評価
+  const damageStar = getStars(def.damage, 60);
+  const rangeStar = getStars(def.range, 3.5);
+  const speedStar = getStars(1000 / def.rate, 2.5);
+
+  // DPS計算（おすすめ）
+  const dps = Math.round(def.damage * (1000 / def.rate));
+
+  const text = `
+    <b>${def.name}タワー</b><br>
+    コスト：${def.cost}G<br><br>
+
+    威力：${damageStar}<br>
+    射程：${rangeStar}<br>
+    速度：${speedStar}<br><br>
+
+    DPS：${dps}
+  `;
+
+  showTooltip(e, text);
+
+    });
+
+    // ✅ マウス移動で追従
+    card.addEventListener("mousemove", (e) => {
+      tooltip.style.left = (e.pageX + 12) + "px";
+      tooltip.style.top = (e.pageY + 12) + "px";
+    });
+
+    // ✅ ホバー終了
+    card.addEventListener("mouseout", hideTooltip);
+
     handArea.appendChild(card);
   });
 }
@@ -718,8 +792,8 @@ function render() {
   }
 
   // スタート・ゴールマーク
-  drawLabel(PATH[0].c, PATH[0].r, 'START', '#43A047');
-  drawLabel(PATH[PATH.length - 1].c, PATH[PATH.length - 1].r, 'GOAL', '#E53935');
+  drawLabel(PATH[0].c, PATH[0].r, 'ENEMY', '#43A047'); // 出現
+  drawLabel(PATH[PATH.length - 1].c, PATH[PATH.length - 1].r, '🏰', '#E53935'); // 城
 
   // タワー描画
   towers.forEach(tower => {
@@ -887,12 +961,22 @@ function drawArrow(ctx, fx, fy, tx, ty) {
 function drawLabel(col, row, text, color) {
   const cx = col * CELL + CELL / 2;
   const cy = row * CELL + CELL / 2;
+
   ctx.fillStyle = color;
-  ctx.font = 'bold 10px sans-serif';
+
+  // ✅ 長さでサイズ変更
+  if (text.length > 2) {
+    ctx.font = 'bold 10px sans-serif';
+  } else {
+    ctx.font = 'bold 20px sans-serif';
+  }
+
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
+
   ctx.fillText(text, cx, cy);
 }
+
 
 // ---------- ゲームオーバー / クリア ----------
 function triggerGameOver() {
